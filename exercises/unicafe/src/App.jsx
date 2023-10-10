@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
+const Button = ({text, handleClick}) => {
+  return (
+    <button onClick={handleClick}>{text}</button>
+  )
+}
+
 const Statistics = ({good, neutral, bad}) => {
+  if (good == 0 && neutral == 0 && bad == 0) {
+    return <h3>No feedback given</h3>
+  }
   return (
     <>
       <h1>Statistics</h1>
@@ -21,16 +30,16 @@ const App = () => {
   const [bad, setBad] = useState(0)
 
   // onClick functions
-  const goodClick = () => setGood(good+1)
-  const neutralClick = () => setNeutral(neutral+1)
-  const badClick = () => setBad(bad+1)
+  const handleGoodClick = () => setGood(good+1)
+  const handleNeutralClick = () => setNeutral(neutral+1)
+  const handleBadClick = () => setBad(bad+1)
 
   return (
     <>
       <h1>Give Feedback</h1>
-      <button onClick={goodClick}>good</button>
-      <button onClick={neutralClick}>neutral</button>
-      <button onClick={badClick}>bad</button>
+      <Button handleClick={handleGoodClick} text="Good"/>
+      <Button handleClick={handleNeutralClick} text="Neutral"/>
+      <Button handleClick={handleBadClick} text="Bad"/>
       <Statistics good={good} bad={bad} neutral={neutral}/>
     </>
   )
