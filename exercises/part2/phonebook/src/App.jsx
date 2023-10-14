@@ -25,10 +25,13 @@ const App = () => {
     } else {
       const personObject = {
         name: newName,
-        number: newPhoneNumber,
-        id: persons.length + 1
+        number: newPhoneNumber
       }
-      setPersons(persons.concat(personObject))
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          setPersons(persons.concat(personObject))
+        })
     }
     setNewName('')
     setNewPhoneNumber('')
@@ -49,13 +52,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter handleOnChange={handleFilterChange} value={filteredText}/>
-      
+      <Filter handleOnChange={handleFilterChange} value={filteredText} />
+
       <h3>Add a new</h3>
-      <PersonForm handleSubmit={addNewPerson} 
-                  inputName={newName} inputPhoneNumber={newPhoneNumber} 
-                  handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange}/>
-      
+      <PersonForm handleSubmit={addNewPerson}
+        inputName={newName} inputPhoneNumber={newPhoneNumber}
+        handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange} />
+
       <h2>Numbers</h2>
       <Persons persons={persons} filteredText={filteredText} />
     </div>
