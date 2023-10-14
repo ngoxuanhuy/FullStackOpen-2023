@@ -19,10 +19,20 @@ const App = () => {
 
   const addNewPerson = (event) => {
     event.preventDefault()
+
     // Check if the added name is already existed in the phonebook
-    const isExisted = persons.find(({ name }) => name === newName)
-    if (isExisted) {
-      alert(`${newName} is already added to phonebook`)
+    const existedPerson = persons.find(p => p.name === newName)
+    if (existedPerson) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        // Update phone number
+        const updatedPerson = { ...existedPerson, number: newPhoneNumber }
+        personService
+          .update(updatedPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            const newPersons = persons.map(p => p.id === returnedPerson.id ? returnedPerson : p)
+            setPersons(newPersons);
+          })
+      }
     } else {
       const personObject = {
         name: newName,
@@ -73,9 +83,13 @@ const App = () => {
 
       <h2>Numbers</h2>
       {
-        persons.map(p => 
-            <Person key={p.id} name={p.name} number={p.number}
+        persons.map(p => {
+          if (p.name.toLowerCase().includes(filteredText.toLowerCase())) {
+            return <Person key={p.id} name={p.name} number={p.number}
               handleContact={() => handleContact(p.id)} />
+          }
+        }
+
         )
       }
     </div>
