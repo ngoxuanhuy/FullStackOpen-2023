@@ -3,6 +3,7 @@ import axios from 'axios'
 import Person from './components/Person'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [filteredText, setFilterText] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     personService
@@ -31,6 +33,10 @@ const App = () => {
           .then(returnedPerson => {
             const newPersons = persons.map(p => p.id === returnedPerson.id ? returnedPerson : p)
             setPersons(newPersons);
+            setSuccessMessage(`Updated phone number of ${returnedPerson.name}`)
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -42,6 +48,10 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setSuccessMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
     setNewName('')
@@ -74,6 +84,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage}/>
       <Filter handleOnChange={handleFilterChange} value={filteredText} />
 
       <h3>Add a new</h3>
