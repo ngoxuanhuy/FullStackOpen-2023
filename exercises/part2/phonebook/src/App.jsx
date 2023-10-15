@@ -11,7 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [filteredText, setFilterText] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -74,7 +75,14 @@ const App = () => {
     console.log("The id is clicked: ", id);
     const person = persons.find(p => p.id === id)
     if (window.confirm(`Delete ${person.name}`)) {
-      personService.removeContact(id)
+      personService
+        .removeContact(id)
+        .catch(error => {
+          setErrorMessage(`Information of ${person.name} has already been removed from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
       // Update the component's state
       const changedPersons = persons.filter(p => p.id !== id)
       setPersons(changedPersons)
@@ -84,7 +92,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage}/>
+      <Notification infoType="success" message={successMessage} />
+      <Notification infoType="error" message={errorMessage} />
       <Filter handleOnChange={handleFilterChange} value={filteredText} />
 
       <h3>Add a new</h3>
